@@ -2,11 +2,9 @@ package cn.xqrcloud.jdbc.dao.impl;
 
 import cn.xqrcloud.jdbc.dao.IAccountDao;
 import cn.xqrcloud.jdbc.entity.Account;
+import cn.xqrcloud.jdbc.utils.JdbcDaoSupport;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.validation.BeanPropertyBindingResult;
-
-import java.sql.JDBCType;
 import java.util.List;
 
 /**
@@ -17,22 +15,17 @@ import java.util.List;
  * 🍁 Create: 2020-07-02 22:44
  * 🐌🐌🐌🐌🐌🐌🐌🐌🐌🐌🐌🐌行而不辍，未来可期🐌🐌🐌🐌🐌🐌🐌🐌🐌🐌🐌🐌
  **/
-public class AccountIDaompl implements IAccountDao {
-    private JdbcTemplate jdbcTemplate;
-
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+public class AccountIDaompl extends JdbcDaoSupport implements IAccountDao {
 
     @Override
     public Account findAccountById(Integer accountId) {
-        List<Account> query = jdbcTemplate.query("select * from account where id=?", new BeanPropertyRowMapper<Account>(Account.class), accountId);
+        List<Account> query = super.getJdbcTemplate().query("select * from account where id=?", new BeanPropertyRowMapper<Account>(Account.class), accountId);
         return query.isEmpty() ? null : query.get(0);
     }
 
     @Override
     public Account findAccountById(String accountName) {
-        List<Account> query = jdbcTemplate.query("select * from account where name=?", new BeanPropertyRowMapper<Account>(Account.class), accountName);
+        List<Account> query =  super.getJdbcTemplate().query("select * from account where name=?", new BeanPropertyRowMapper<Account>(Account.class), accountName);
         if (accountName.isEmpty()) {
             return null;
         }
@@ -44,7 +37,7 @@ public class AccountIDaompl implements IAccountDao {
 
     @Override
     public void updateAccount(Account account) {
-        jdbcTemplate.update("update  account set name=?,money=? where id=?",
+        super.getJdbcTemplate().update("update  account set name=?,money=? where id=?",
                 account.getName(), account.getMoney(), account.getId());
     }
 }
